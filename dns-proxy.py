@@ -20,10 +20,9 @@ class DNSResolver:
       conn.close()
 
   def dns_query(self, query):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     context = ssl.SSLContext(ssl.PROTOCOL_TLS)
 
-    wrapped_socket = context.wrap_socket(sock, server_hostname=self.DNS_ADDR)
+    wrapped_socket = context.wrap_socket(socket.socket(socket.AF_INET, socket.SOCK_STREAM), server_hostname=self.DNS_ADDR)
     wrapped_socket.connect((self.DNS_ADDR, self.DNS_PORT))
     wrapped_socket.send(query)
 
@@ -37,6 +36,7 @@ class DNSResolver:
       conn.sendto(response, conn.getpeername())
     else:
       print('Error in DNS query: \n', data)
+      conn.close()
 
   def __init__(self):
     self.DNS_ADDR = '1.1.1.1'
